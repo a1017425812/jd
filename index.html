@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="js/jquery.js"></script>
+    <script src="js/template-web.js"></script>
+    <style>
+        .input-value {
+            width: 500px;
+            height: 30px;
+            margin: 0 auto;
+            display: block;
+        }
+        
+        .task {
+            width: 600px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+        }
+        
+        .all {
+            width: 600px;
+            position: absolute;
+            left: 50%;
+            margin-left: -240px;
+        }
+        
+        .all a {
+            text-decoration: none;
+            color: black;
+            margin-right: 40px;
+        }
+        
+        .words {
+            margin-top: 50px;
+            position: relative;
+        }
+        
+        .words span {
+            position: absolute;
+            display: block;
+            width: 300px;
+            left: 50%;
+            margin-left: -350px;
+            top: -20px;
+        }
+        
+        .duty {
+            position: relative;
+            left: 50%;
+            margin-top: 20px;
+            margin-left: -200px;
+        }
+        
+        .delete {
+            margin-left: 200px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="task">
+        <h1>列表任务</h1>
+        <input class="input-value" type="text">
+        <!-- <% for(var i=0;i<)%> -->
+    </div>
+    <div class="duty">
+        <script type="text/html" id="tpl">
+            {{ each list as value i}} <input type="checkbox" value="{{i}}">
+            <span class="name">{{value}}</span>
+            <button class="delete" onclick="move({{i}});">删除</button>
+            <br> {{ /each}}
+        </script>
+    </div>
+    <div class="words">
+        <div class="all">
+            <span>还剩下0个未完成的任务</span>
+            <a href="#">所有任务</a>
+            <a href="#">未完成的任务</a>
+            <a href="#">已完成任务</a>
+            <a href="#">删除所有已完成任务</a>
+        </div>
+    </div>
+</body>
+<script>
+    $(function() {
+        var taskName;
+
+        if (localStorage.getItem('arr')) {
+            var res = localStorage.getItem('arr');
+            var result = JSON.parse(res);
+            var html = template('tpl', {
+                // 传两个参数，一个作为list的value传过去
+                list: result,
+            })
+            $('.duty').html(html);
+            console.log(result);
+
+        }
+        document.onkeydown = function(e) {
+            if (e.keyCode == 13) {
+                taskName = $('.input-value').val();
+                if (taskName == "") {
+                    alert('任务名字不能为空');
+                    return;
+                }
+                console.log(taskName);
+                if (!localStorage.getItem('arr')) {
+                    var arr = [];
+                    arr.push(taskName);
+                    console.log(arr);
+                    var json = JSON.stringify(arr);
+                    localStorage.setItem('arr', json);
+                } else {
+                    var json = localStorage.getItem('arr');
+                    var arr = JSON.parse(json);
+                    arr.push(taskName);
+                    json = JSON.stringify(arr);
+                    localStorage.setItem('arr', json);
+                    if (localStorage.getItem('arr')) {
+                        var res = localStorage.getItem('arr');
+                        var result = JSON.parse(res);
+                        var html = template('tpl', {
+                            // 传两个参数，一个作为list的value传过去
+                            list: result,
+                        })
+                        $('.duty').html(html);
+                    }
+                }
+            }
+        }
+
+
+
+    })
+
+    // 删除事件
+    function move(i) {
+        alert(i)
+    }
+</script>
+
+</html>
